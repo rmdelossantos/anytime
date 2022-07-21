@@ -1,0 +1,12 @@
+[
+    {
+        "model": "backend.user",
+        "pk": 1,
+        "fields": {
+            "username": "adminx",
+            "password": "T@rt@r0schr0m@",
+            "email": "russmanilads@gmail.com"
+        }
+    }
+
+]
