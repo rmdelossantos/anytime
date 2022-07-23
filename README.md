@@ -140,7 +140,7 @@ Run the shell
 `python manage.py shell`
 
 Run the following in the shell
-```ipython
+```python
 from backend.models import User
 user = User.objects.get(username=<username>)
 user.user_role="AD"
@@ -150,7 +150,7 @@ user.save()
 User and Clock models can be viewed in Django admin
 
 ## Applicant Notes
-- I added validation to email format and password requirements
-- I raised an exception if the user tries to clock in without the previous clock_entry not clocked_out
+- I added validation to the email format and password requirements
+- I raised an exception if the user tries to clock in with the previous clock_entry not clocked_out
 - I raised an exception if the user tries to clock out without a clock entry for the day
 - Wanted to add design a frontend, I overthought a Figma design. Will just continue in another branch, some other time.
