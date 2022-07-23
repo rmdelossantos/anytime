@@ -149,11 +149,9 @@ user.user_role="AD"
 user.save()
 ```
 
-User and Clock models are available in Django admin
+User and Clock models can be viewed in Django admin
 
 ## Applicant Notes
 - I added validation to email format and password requirements
-- I don't know the other rules for clocking in  or out so I filled in the gaps:
-    - If user clocks in today without a clock out yesterday, yesterdays Clock entry will have full 8 hours of work.
-    - If user clocks out today without a clock in entry, Clock entry will have full 8 hours of work.
+- I raised an exception if the user tries to clock out without a clock entry for the day
 - Wanted to add design a frontend, I overthought a Figma design. Will just continue in another branch, some other time.
