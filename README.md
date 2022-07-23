@@ -114,7 +114,6 @@ mutation createMutation {
             clockedIn
             clockedOut
         }
-        message
 }
 ```
 Clock out
@@ -126,7 +125,6 @@ mutation createMutation {
             clockedIn
             clockedOut
         }
-        message
 }
 ```
 
