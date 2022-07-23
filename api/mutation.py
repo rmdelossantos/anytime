@@ -21,7 +21,7 @@ class CreateUser(graphene.Mutation):
     user = graphene.Field(UserType)
 
     @staticmethod
-    def mutate(root,info,user=None):
+    def mutate(root,info, user=None):
         try:
             if not is_valid_email(user.email):
                 raise ValueError("The email provided is not valid. Please try again.")
@@ -35,6 +35,7 @@ class CreateUser(graphene.Mutation):
                 raise ValueError(error_message)     
 
             is_username_in_use = User.objects.filter(username=user.username).exists()
+            
             if is_username_in_use:
                 raise ValueError("The username provided isn't available. Please try another username")
 
@@ -58,24 +59,31 @@ class ClockIn(graphene.Mutation):
     def mutate(root,info):
         try:
             user = info.context.user
+            print(user)
             if not user.is_authenticated:
                 raise ValueError("Authentication failed.")
 
             yesterday = date.today() - timedelta(days=1)
+            message=None
             # check yesterday's clock 
-            yesterday_clock_obj = Clock.objects.get(user=user , created_at__day=yesterday.day, clocked_in__day=yesterday.day)
-            if yesterday_clock_obj and (yesterday_clock_obj.clocked_in and not yesterday_clock_obj.clocked_out):
-                message = "Missing clocked out log from yesterday. System assigned clocked out log equivalent to 8 hours."
-                yesterday_clock_obj.clocked_out = yesterday_clock_obj.clocked_in + timedelta(hours=8)
-                yesterday_clock_obj.save()
-
+            try:
+                yesterday_clock_obj = Clock.objects.get(user=user , created_at__day=yesterday.day, clocked_in__day=yesterday.day)
+                if yesterday_clock_obj and (yesterday_clock_obj.clocked_in and not yesterday_clock_obj.clocked_out):
+                    message = "Missing clocked out log from yesterday. System assigned clocked out log equivalent to 8 hours."
+                    yesterday_clock_obj.clocked_out = yesterday_clock_obj.clocked_in + timedelta(hours=8)
+                    yesterday_clock_obj.save()
+            except Clock.DoesNotExist:
+                pass
             try:
                 clock = Clock.objects.get(user=user,created_at__day=date.today().day, clocked_in__day=date.today().day)
+                if clock.clocked_in:
+                    message="You have already clocked in."
+                    return ClockIn(clock=clock, message=message)
 
             except Clock.DoesNotExist:
                 clocked_in = datetime.now()
                 clock = Clock.objects.create(user=user, created_at=clocked_in, clocked_in=clocked_in)
-            
+                
             return ClockIn(clock=clock, message=message)
 
         except Exception as e:
@@ -83,28 +91,33 @@ class ClockIn(graphene.Mutation):
             raise Exception("Something went wrong.")  
 
 class ClockOut(graphene.Mutation):
-    clock = graphene.Field(UserType, token=graphene.String(required=True))
+    clock = graphene.Field(ClockType, token=graphene.String(required=True))
     message = graphene.String()
 
     @staticmethod
     def mutate(root,info):
         try:
             user = info.context.user
+            print(user)
             if not user.is_authenticated:
+                print('went here')
                 raise ValueError("Authentication failed.")
-
-            try:
+            message=''
+            try:    
+                clocked_out = datetime.now()
                 clock = Clock.objects.get(user=user,created_at__day=date.today().day, clocked_in__day=date.today().day)
+                if clock.clocked_out:
+                    message = "You have already clocked out."
+                    return ClockOut(clock=clock, message=message)
 
             except Clock.DoesNotExist:
                 # forgot to clock in today
-                clocked_out = datetime.now()
                 clocked_in = clocked_out - timedelta(hours=8)
                 clock = Clock.objects.create(user=user,created_at__day=date.today().day, clocked_in=clocked_in)
-                clock.clocked_out = clocked_out
                 message = "Missing clocked in log for today. System assigned clocked in log equivalent to 8 hours."
-
-            return ClockIn(clock=clock, message=message)
+            clock.clocked_out = clocked_out
+            clock.save()
+            return ClockOut(clock=clock, message=message)
 
         except Exception as e:
             print(e)
