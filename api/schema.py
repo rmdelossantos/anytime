@@ -45,10 +45,11 @@ class Query(graphene.ObjectType):
 
             if user.is_anonymous:
                 raise Exception('Authentication failed.')
-            try:
-                clock = Clock.objects.get(user=user,created_at__day=date.today().day, clocked_in__day=date.today().day)
+            try:    
+                clock = Clock.objects.filter(user=user, clocked_out=None).latest("created_at")
             except Clock.DoesNotExist:
-                return None     
+                return None    
+                
             return clock
         
         except Exception as e:

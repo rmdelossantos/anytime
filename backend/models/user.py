@@ -10,7 +10,8 @@ class UserManager(BaseUserManager):
 
         user = self.model(username=username, email=email)
         if role == 'AD':
-            is_superuser = True
+            print('went here')
+            user.is_superuser = True
             user.user_role=role
 
         user.set_password(password)

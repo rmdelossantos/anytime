@@ -32,7 +32,12 @@ class ClockedHoursType(DjangoObjectType):
         """
         user = info.context.user
         try:
-            clock_obj = Clock.objects.get(user=user,created_at__day=date.today().day, clocked_in__day=date.today().day)
+            dtrange = get_dt_range('Today')
+            clock_objs = Clock.objects.filter(user=user,created_at__range=dtrange)
+            total_hours = 0
+            for obj in clock_objs:
+                total_hours += obj.calc_hours_worked
+            return total_hours   
         except Clock.DoesNotExist:
             return 0    
         except Exception:
@@ -48,10 +53,9 @@ class ClockedHoursType(DjangoObjectType):
         try:
             user = info.context.user
             dtrange = get_dt_range('Week')
-            print(dtrange)
-            clock_obj = Clock.objects.filter(user=user, created_at__range=dtrange)
+            clock_objs = Clock.objects.filter(user=user, created_at__range=dtrange)
             total_hours = 0
-            for obj in clock_obj:
+            for obj in clock_objs:
                 total_hours += obj.calc_hours_worked
             return total_hours   
         except Exception:
@@ -63,10 +67,9 @@ class ClockedHoursType(DjangoObjectType):
         try:
             user = info.context.user
             dtrange = get_dt_range('Month')
-            print(dtrange)
-            clock_obj = Clock.objects.filter(user=user, created_at__range=dtrange)
+            clock_objs = Clock.objects.filter(user=user, created_at__range=dtrange)
             total_hours = 0
-            for obj in clock_obj:
+            for obj in clock_objs:
                 total_hours += obj.calc_hours_worked
             return total_hours           
         except Exception:

@@ -7,7 +7,7 @@ class Clock(models.Model):
                             on_delete=models.CASCADE,
                             null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now, db_index=True)
-    clocked_in = models.DateTimeField()
+    clocked_in = models.DateTimeField(null=True, blank=True)
     clocked_out = models.DateTimeField(null=True, blank=True)
 
     class Meta:
