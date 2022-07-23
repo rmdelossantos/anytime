@@ -29,6 +29,18 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+IMPORT_STRINGS = (
+    'JWT_ENCODE_HANDLER',
+    'JWT_DECODE_HANDLER',
+    'JWT_PAYLOAD_HANDLER',
+    'JWT_PAYLOAD_GET_USERNAME_HANDLER',
+    'JWT_GET_USER_BY_NATURAL_KEY_HANDLER',
+    'JWT_REFRESH_EXPIRED_HANDLER',
+    'JWT_GET_REFRESH_TOKEN_HANDLER',
+    'JWT_ALLOW_ANY_HANDLER',
+    'JWT_ALLOW_ANY_CLASSES',
+)
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,7 +52,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'backend',
     'api',
-    'graphene_django'
+    'graphene_django',
+    "graphql_jwt",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
 ]
 
 MIDDLEWARE = [
@@ -141,6 +155,12 @@ GRAPHENE = {
 }
 
 GRAPHQL_JWT = {
-    "JWT_ALLOW_ARGUMENT": True,
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=5),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),    
+    'JWT_SECRET_KEY': '',
+    'JWT_ALGORITHM': 'HS256',
 }
 
