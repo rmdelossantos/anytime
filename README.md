@@ -1,7 +1,6 @@
-# Project for AnyMind Group Application
+# GraphQL-Django Implementation
 
-Repo of the Python technical project for AnyMind Group application process \
-I called this AnyTime (pun intended 😉)
+Repo for GraphQL-Django review. This is a time-logging app called AnyTime
 
 ## Setup
 
@@ -78,9 +77,9 @@ Create a user
 ```graphql
 mutation createMutation {
     createUser(user: {username: $username, password: $password, email: $email}) {
-        user{
-            id
-        } 
+      user{
+        id
+      } 
     }
 }
 
@@ -89,9 +88,9 @@ Obtain JWT token
 ```graphql
 mutation createMutation {
     obtainToken(username :$username, password: $password) {
-        token
-        payload
-        refreshExpiresIn
+      token
+      payload
+      refreshExpiresIn
     }
 }
 ```
@@ -99,9 +98,9 @@ Obtain JWT Token
 ```graphql
 mutation createMutation {
     obtainToken(username :$username, password: $password) {
-        token
-        payload
-        refreshExpiresIn
+      token
+      payload
+      refreshExpiresIn
     }
 }
 ```
@@ -109,22 +108,22 @@ Clock in
 ```graphql
 mutation createMutation {
  	clockIn {
-        clock(token: $token) {
-            id
-            clockedIn
-            clockedOut
-        }
+    clock(token: $token) {
+        id
+        clockedIn
+        clockedOut
+    }
 }
 ```
 Clock out
 ```graphql
 mutation createMutation {
  	clockOut {
-        clock(token: $token) {
-            id
-            clockedIn
-            clockedOut
-        }
+    clock(token: $token) {
+        id
+        clockedIn
+        clockedOut
+    }
 }
 ```
 
@@ -149,8 +148,8 @@ user.save()
 
 User and Clock models can be viewed in Django admin
 
-## Applicant Notes
+## Notes
 - I added validation to the email format and password requirements
 - I raised an exception if the user tries to clock in with the previous clock_entry not clocked_out
 - I raised an exception if the user tries to clock out without a clock entry for the day
-- Wanted to add design a frontend, I overthought a Figma design. Will just continue in another branch, some other time.
+- Frontend to follow.
